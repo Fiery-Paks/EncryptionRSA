@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ConsoleApp1
 {
@@ -62,17 +63,22 @@ namespace ConsoleApp1
             Console.WriteLine($" p = {p}\n q = {q}");
             Console.WriteLine($" k = {k}\n d = {d}\n Функция Эйлера = ({p} - 1) * ({q} - 1) = {funcEler}");
             Console.WriteLine($" e = ({k} * {funcEler} + 1) / {d} = {e}\n n = {p} * {q} = {n}\n");
-         
+
             Console.WriteLine($" Открытый ключ - ({e}, {n})\n Закрытый ключ - ({d}, {n})\n");
 
             Console.Write($" Введите ФИО: ");
             string fio = Console.ReadLine().ToUpper();
-            Console.WriteLine();
-            foreach (char _char in fio.ToCharArray())
+            if (fio.ToCharArray().Except(alphabet).ToArray().Length != 0)
+                Console.WriteLine("В строке присутствуют неизвестные символы");
+            else
             {
-                Console.WriteLine($" Буква: '{_char}'");
-                int numChar = alphabet.IndexOf(_char) + 2;
-                DoEncryptionDecryption(numChar, (int)e, (int)d , (int)n);
+                Console.WriteLine();
+                foreach (char _char in fio.ToCharArray())
+                {
+                    Console.WriteLine($" Буква: '{_char}'");
+                    int numChar = alphabet.IndexOf(_char) + 2;
+                    DoEncryptionDecryption(numChar, (int)e, (int)d, (int)n);
+                }
             }
             Console.ReadLine();
         }
@@ -82,20 +88,22 @@ namespace ConsoleApp1
             Console.WriteLine($" Изначальное значение: {numChar}, Зашифрованное: {ModExpnumChar}");
 
             int newnumChar = ModExp(ModExpnumChar, d, n);
-            Console.WriteLine($" Зашифрованное: {ModExpnumChar}, Расшифрованное: {newnumChar}\n");
+            Console.WriteLine($" Зашифрованное: {ModExpnumChar}, Расшифрованное: {newnumChar}");
+
+            Console.WriteLine($" Расшифрованная буква - {alphabet[newnumChar - 2]}\n");
         }
 
         static int ModExp(int baseNum, int exp, int mod)
         {
             int result = 1;
-            baseNum = baseNum % mod;  
+            baseNum = baseNum % mod;
 
             while (exp > 0)
             {
                 if (exp % 2 == 1)
                     result = (result * baseNum) % mod;
 
-                baseNum = (baseNum * baseNum) % mod; 
+                baseNum = (baseNum * baseNum) % mod;
                 exp = exp / 2;
             }
 
