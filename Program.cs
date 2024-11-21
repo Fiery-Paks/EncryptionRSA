@@ -9,7 +9,7 @@ namespace ConsoleApp1
 {
     internal class Program
     {
-        static List<int> simpleNumbers = new List<int>()
+        private static List<int> simpleNumbers = new List<int>()
         { 2, 3,  5, 7, 11, 13, 17, 19, 23 , 29, 31,
         37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79,
         83, 89, 97, 101, 103, 107, 109, 113, 127, 131,
@@ -21,7 +21,7 @@ namespace ConsoleApp1
         463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547,
         557, 563, 569, 571, 577, 587, 593, 599};*/
 
-        static List<char> alphabet = new List<char>()
+        private static List<char> alphabet = new List<char>()
         {
             'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И',
             'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т',
@@ -30,6 +30,61 @@ namespace ConsoleApp1
         };
 
         static void Main(string[] args)
+        {
+            Task5();
+        }
+        private static void Task5()
+        {
+            Console.Write($" Введите n: ");
+            int n = Convert.ToInt32(Console.ReadLine());
+            Console.Write($" Введите d: ");
+            int d = Convert.ToInt32(Console.ReadLine());
+            Console.Write($" Введите e: ");
+            int e = Convert.ToInt32(Console.ReadLine());
+            Console.Write($" Введите H_last: ");
+            int H = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine();
+            DoElectronicDigitalSignatur(H, e, d, n);
+            Console.ReadLine();
+        }
+        private static void DoElectronicDigitalSignatur(int H, int e, int d, int n)
+        {
+            int ModExpNum = ModExp(H, d, n);
+            Console.WriteLine($" s = {H}^{d} mod{n} = {ModExpNum}");
+
+            int NewNum = ModExp(ModExpNum, e, n);
+            Console.WriteLine($" H = {ModExpNum}^{e} mod{n} = {NewNum}");
+        }
+        private static void Task4()
+        {
+            Console.Write($" Введите n: ");
+            int n = Convert.ToInt32(Console.ReadLine());
+            Console.Write($" Введите H0: ");
+            int H = Convert.ToInt32(Console.ReadLine());
+            Console.Write($" Введите ФИО: ");
+            string fio = Console.ReadLine().ToUpper();
+
+            if (fio.ToCharArray().Except(alphabet).ToArray().Length != 0)
+                Console.WriteLine("В строке присутствуют неизвестные символы");
+            else
+            {
+                Console.WriteLine();
+                int H_old;
+                int i = 0;
+                foreach (char _char in fio.ToCharArray())
+                {
+                    H_old = H;
+                    int numChar = alphabet.IndexOf(_char) + 1;
+                    H = ((H + numChar) * (H + numChar)) % n;
+                    Console.WriteLine($" H{i + 1} = (H{i}+M{i + 1})^2 mod n = ({H_old}+{numChar})^2 mod {n} = {H} ");
+                    i++;
+                }
+                Console.WriteLine($" В итоге получаем хеш-образ сообщения «{fio}», равный {H}.");
+            }
+            Console.ReadLine();
+        }
+
+        private static void Task3()
         {
             Random random = new Random();
 
@@ -41,8 +96,8 @@ namespace ConsoleApp1
                 rand_q = random.Next(0, simpleNumbers.Count - 1);
             }
 
-            double p = simpleNumbers[rand_p];
-            double q = simpleNumbers[rand_q];
+            double p = 13;// simpleNumbers[rand_p];
+            double q = 29;// simpleNumbers[rand_q];
 
             double n = p * q;
 
@@ -52,7 +107,7 @@ namespace ConsoleApp1
             List<int> coprimeNumbers = FindCoprimeNumbers((int)funcEler);
             int rand_SN = random.Next(0, coprimeNumbers.Count - 1);
 
-            double d = coprimeNumbers[rand_SN];
+            double d = 11;// coprimeNumbers[rand_SN];
 
             int k = 0;
             double e = FindE(d, funcEler, ref k);
@@ -82,7 +137,7 @@ namespace ConsoleApp1
             }
             Console.ReadLine();
         }
-        static void DoEncryptionDecryption(int numChar, int e, int d, int n)
+        private static void DoEncryptionDecryption(int numChar, int e, int d, int n)
         {
             int ModExpnumChar = ModExp(numChar, e, n);
             Console.WriteLine($" Изначальное значение: {numChar}, Зашифрованное: {ModExpnumChar}");
@@ -93,7 +148,7 @@ namespace ConsoleApp1
             Console.WriteLine($" Расшифрованная буква - {alphabet[newnumChar - 2]}\n");
         }
 
-        static int ModExp(int baseNum, int exp, int mod)
+        private static int ModExp(int baseNum, int exp, int mod)
         {
             int result = 1;
             baseNum = baseNum % mod;
